@@ -15,6 +15,10 @@
           width: 500px;
           height: 350px;
         }
+        .video {
+            width:300px;
+            height: 300px;
+        }
     </style> 
     <script>
         var app = angular.module('app', ['ngImgCrop']);
@@ -23,30 +27,30 @@
 
             $scope.capturedPhoto = null;
 
-                // $scope.takePhotoInit = function(){
-                //      // Get access to the user's camera
-                //     navigator.mediaDevices.getUserMedia({ video: true })
-                //     .then(function (stream) {
-                //         var video = document.getElementById('video');
-                //         video.srcObject = stream;
-                //     })
-                //     .catch(function (error) {
-                //         console.error('Error accessing camera:', error);
-                //     });
-                // }
-
-                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                $scope.takePhotoInit = function(){
+                     // Get access to the user's camera
                     navigator.mediaDevices.getUserMedia({ video: true })
-                        .then(function (stream) {
-                            var video = document.getElementById('video');
-                            video.srcObject = stream;
-                        })
-                        .catch(function (error) {
-                            console.error('Error accessing camera:', error);
-                        });
-                } else {
-                    console.error('getUserMedia is not supported on this browser');
+                    .then(function (stream) {
+                        var video = document.getElementById('video');
+                        video.srcObject = stream;
+                    })
+                    .catch(function (error) {
+                        console.error('Error accessing camera:', error);
+                    });
                 }
+
+                // if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                //     navigator.mediaDevices.getUserMedia({ video: true })
+                //         .then(function (stream) {
+                //             var video = document.getElementById('video');
+                //             video.srcObject = stream;
+                //         })
+                //         .catch(function (error) {
+                //             console.error('Error accessing camera:', error);
+                //         });
+                // } else {
+                //     console.error('getUserMedia is not supported on this browser');
+                // }
 
 
                 $scope.capturePhoto = function () {
@@ -86,17 +90,17 @@
         });
     </script> 
 </head>
-<body ng-app="app" ng-controller="Ctrl">
+<body ng-app="app" ng-controller="Ctrl" style="padding:20px;">
    <div class="container ">
-        <button ng-click="takePhotoInit()">Take Photo</button>
+        <button ng-click="takePhotoInit()">Take Photo</button><br>
         <!-- Display the video stream -->
-        <video id="video" width="640" height="480" autoplay></video>
+        <video class="video" id="video"  autoplay></video>
 
-        <!-- Button to capture a photo -->
+        <!-- Button to capture a photo --><br>
         <button ng-click="capturePhoto()">Capture Photo</button>
-
+        <br>
         <!-- Display the captured photo -->
-        <img ng-src="{{ capturedPhoto }}" ng-show="capturedPhoto">
+        <!-- <img ng-src="{{ capturedPhoto }}" ng-show="capturedPhoto"> -->
     
     <div class="crop-and-resize">
         <div>Select an image file: <input type="file" id="fileInput" /></div>
