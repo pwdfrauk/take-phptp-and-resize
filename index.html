@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Crop Using AngularJS</title>
+    <script src="assets/js/angular.js"></script> 
+    <!-- <script src="assets/webcam-directive/webcam.min.js"></script> -->
+    <script src="assets/ngImgCrop-master/compile/unminified/ng-img-crop.js"></script> 
+    <link rel="stylesheet" type="text/css" href="assets/ngImgCrop-master/compile/unminified/ng-img-crop.css">
+    <style>
+        .cropArea {
+          background: #E4E4E4;
+          overflow: hidden;
+          width: 500px;
+          height: 350px;
+        }
+    </style> 
+    <script>
+        var app = angular.module('app', ['ngImgCrop']);
+
+        app.controller('Ctrl', function ($scope) {
+
+            $scope.capturedPhoto = null;
+
+                $scope.takePhotoInit = function(){
+                     // Get access to the user's camera
+                    navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function (stream) {
+                        var video = document.getElementById('video');
+                        video.srcObject = stream;
+                    })
+                    .catch(function (error) {
+                        console.error('Error accessing camera:', error);
+                    });
+                }
+
+                $scope.capturePhoto = function () {
+                    var canvas = document.createElement('canvas');
+                    var video = document.getElementById('video');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    // Set the captured photo to be displayed
+                    $scope.capturedPhoto = canvas.toDataURL('image/png');
+                    $scope.myImage = $scope.capturedPhoto;
+                };
+
+
+            // image crop code bellow
+            $scope.myImage = '';
+            $scope.myCroppedImage = '';
+
+            var handleFileSelect = function (evt) {
+                var file = evt.currentTarget.files[0];
+                var reader = new FileReader();
+                reader.onload = function (evt) {
+                    $scope.$apply(function ($scope) {
+                        $scope.myImage = evt.target.result;
+                    });
+                };
+                reader.readAsDataURL(file);
+            };
+
+            angular.element(document.querySelector('#fileInput')).on('change', handleFileSelect);
+
+            // $scope.saveCroppedImage = function () {
+            //     // Corrected to set $scope.myCroppedImage
+            //     $scope.myCroppedImage = $scope.myCroppedImage;
+            // };
+        });
+    </script> 
+</head>
+<body ng-app="app" ng-controller="Ctrl">
+   <div class="container ">
+        <button ng-click="takePhotoInit()">Take Photo</button>
+        <!-- Display the video stream -->
+        <video id="video" width="640" height="480" autoplay></video>
+
+        <!-- Button to capture a photo -->
+        <button ng-click="capturePhoto()">Capture Photo</button>
+
+        <!-- Display the captured photo -->
+        <img ng-src="{{ capturedPhoto }}" ng-show="capturedPhoto">
+    
+    <div class="crop-and-resize">
+        <div>Select an image file: <input type="file" id="fileInput" /></div>
+        <div class="cropArea">
+            <img-crop 
+            image="myImage" 
+            result-image="myCroppedImage"
+            area-type="square" 
+            min-size="300" 
+            max-size="300"
+            result-image-size="300"
+            ></img-crop>
+        </div>
+        <!-- <button ng-click="saveCroppedImage()">Save Cropped Image</button> -->
+        <div>Cropped Image:</div>
+        <div><img ng-src="{{ myCroppedImage }}" /></div>
+    </div>
+   </div>
+</body>
+</html>
