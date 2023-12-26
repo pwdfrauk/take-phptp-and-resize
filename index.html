@@ -23,17 +23,31 @@
 
             $scope.capturedPhoto = null;
 
-                $scope.takePhotoInit = function(){
-                     // Get access to the user's camera
+                // $scope.takePhotoInit = function(){
+                //      // Get access to the user's camera
+                //     navigator.mediaDevices.getUserMedia({ video: true })
+                //     .then(function (stream) {
+                //         var video = document.getElementById('video');
+                //         video.srcObject = stream;
+                //     })
+                //     .catch(function (error) {
+                //         console.error('Error accessing camera:', error);
+                //     });
+                // }
+
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                     navigator.mediaDevices.getUserMedia({ video: true })
-                    .then(function (stream) {
-                        var video = document.getElementById('video');
-                        video.srcObject = stream;
-                    })
-                    .catch(function (error) {
-                        console.error('Error accessing camera:', error);
-                    });
+                        .then(function (stream) {
+                            var video = document.getElementById('video');
+                            video.srcObject = stream;
+                        })
+                        .catch(function (error) {
+                            console.error('Error accessing camera:', error);
+                        });
+                } else {
+                    console.error('getUserMedia is not supported on this browser');
                 }
+
 
                 $scope.capturePhoto = function () {
                     var canvas = document.createElement('canvas');
